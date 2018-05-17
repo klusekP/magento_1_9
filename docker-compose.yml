@@ -3,6 +3,7 @@ php7:
   dockerfile: /docker/docker/dockerfile_php_7
   volumes:
     - ./:/var/www/html
+    - ./log/:/var/log/apache2/
     - ./docker/php:/usr/local/etc/php
     - ./docker/apache2/apache2.conf:/etc/apache2/conf-enabled/apache2.conf
     - ./docker/apache2/hosts.conf:/etc/apache2/sites-enabled/hosts.conf
@@ -14,11 +15,17 @@ php7:
 
 
 mysql:
-  image: mysql
+  image: mysql:5.7
   ports:
     - "3306:3306"
+  expose:
+    - "3306"
   environment:
-    - MYSQL_ROOT_PASSWORD=MY_PASSWORD
-    - MYSQL_DATABASE=YOUR_DATABASE_NAME
+    MYSQL_DATABASE: "magento"
+    MYSQL_USER: "magento"
+    MYSQL_PASSWORD: "magento"
+    MYSQL_ROOT_PASSWORD: "magento"
+    MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
   volumes: 
+    - ./mysql:/var/lib/mysql
     - ./docker/mysql:/docker-entrypoint-initdb.d
